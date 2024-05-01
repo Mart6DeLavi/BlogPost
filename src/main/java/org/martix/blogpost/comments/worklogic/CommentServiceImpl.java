@@ -1,13 +1,16 @@
-package org.martix.blogpost.comments;
+package org.martix.blogpost.comments.worklogic;
 
 import lombok.AllArgsConstructor;
+import org.martix.blogpost.comments.CommentEntity;
+import org.martix.blogpost.comments.CommentRepository;
+import org.martix.blogpost.comments.CommentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
@@ -25,14 +28,4 @@ public class CommentServiceImpl implements CommentService{
     public CommentEntity findCommentByText(String text) {
         return commentRepository.findCommentByText(text);
     }
-
-    /*@Override
-    public CommentEntity updateComment(CommentEntity comment) {
-        return commentRepository.save(comment);
-    }
-
-    @Override
-    public void deleteComment(long id) {
-        commentRepository.deleteCommentById(id);
-    }*/
 }

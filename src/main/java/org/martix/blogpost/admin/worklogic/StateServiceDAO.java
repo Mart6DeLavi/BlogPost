@@ -1,5 +1,10 @@
-package org.martix.blogpost.admin;
+/**
+ * Не нужный файл
+ * */
 
+package org.martix.blogpost.admin.worklogic;
+
+import org.martix.blogpost.admin.StateEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

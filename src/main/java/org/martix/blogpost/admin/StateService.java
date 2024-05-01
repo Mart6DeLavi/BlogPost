@@ -1,4 +1,4 @@
-package org.martix.blogpost;
+package org.martix.blogpost.admin;
 
 import java.util.List;
 

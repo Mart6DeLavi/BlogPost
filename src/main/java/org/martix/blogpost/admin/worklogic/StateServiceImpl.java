@@ -1,6 +1,9 @@
-package org.martix.blogpost.admin;
+package org.martix.blogpost.admin.worklogic;
 
 import lombok.AllArgsConstructor;
+import org.martix.blogpost.admin.StateEntity;
+import org.martix.blogpost.admin.StateRepository;
+import org.martix.blogpost.admin.StateService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
