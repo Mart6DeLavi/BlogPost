@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Primary
-public class StateServiceImpl implements StateService{
+public class StateServiceImpl implements StateService {
     private final StateRepository stateRepository;
 
     @Override

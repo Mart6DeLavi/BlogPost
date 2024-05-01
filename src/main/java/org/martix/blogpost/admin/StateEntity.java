@@ -1,4 +1,4 @@
-package org.martix.blogpost.admin;
+package org.martix.blogpost;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,6 +22,4 @@ public class StateEntity {
     @Column(nullable = false)
     private LocalDate updatedAt;
     private String text;
-
-    private List<String> comments = new ArrayList<>();
 }
