@@ -71,7 +71,7 @@ public class CommentController {
     @PostMapping("/{title}/save_comment")
     public ResponseEntity<String> saveComment(@PathVariable String title, @RequestBody CommentEntity comment) {
         var article = stateService.findStateByTitle(title);
-        System.out.println("State title: " + article);
+        //System.out.println("State title: " + article);
         if(article != null) {
             comment.setState(article);
             comment.setDateOfWriting(LocalDate.now());
