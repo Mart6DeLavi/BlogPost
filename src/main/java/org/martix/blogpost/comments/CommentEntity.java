@@ -12,10 +12,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Table(name = "comments")
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     /**
      * TODO: писатель должен подставляться автоматически
      * Функционал: должно браться имя и фамилия с базы данных писателей.
@@ -30,4 +32,5 @@ public class CommentEntity {
     @ManyToOne
     @JoinColumn(name = "state_id")
     private StateEntity state;
+
 }
