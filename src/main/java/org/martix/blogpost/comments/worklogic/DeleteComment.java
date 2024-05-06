@@ -1,8 +1,6 @@
 package org.martix.blogpost.comments.worklogic;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.martix.blogpost.admin.StateService;
 import org.martix.blogpost.comments.CommentEntity;
 import org.martix.blogpost.comments.CommentService;
