@@ -17,14 +17,19 @@ public class StateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, unique = true)
     private String title;
+
     @Column(nullable = false)
     private String author;
+
     @Column(nullable = false)
     private LocalDate createdAt;
+
     @Column(nullable = false)
     private LocalDate updatedAt;
+
     private String text;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL)
