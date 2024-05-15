@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import org.martix.blogpost.admin.StateService;
 import org.martix.blogpost.comments.CommentEntity;
 import org.martix.blogpost.comments.CommentService;
-import org.martix.blogpost.users.UserDetailService;
-import org.martix.blogpost.users.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -30,7 +27,6 @@ public class CommentController {
     private static final String TITLE = "/{title}";
     private static final String WRITE_AND_SAVE_COMMENT = "/{title}/write_comment";
     private static final String FIND_COMMENT_BY_TEXT = "/{title}/{text}/find_comment";
-    private final UserDetailService userDetailService;
 
     /**
      * TODO: сделать чтобы в таблице comment_entity показывался заголовок статьи к которой привязан комментарий
@@ -38,19 +34,17 @@ public class CommentController {
 
 
     /**
-     * Для функции getAllCommentsFromStateByTitle()
+     * For the get All Comments From State By Title() function,
+     * this function takes the title of the article as a parameter
+     * from the request URL.
      *
-     * Данная функция как параметр принимает заголовок статьи
-     * из URL запроса.
+     * First to the article variable that is responsible for the article.
+     * Then there is a check to see if the article has been found. If yes,
+     * then all the comments adjacent to the article are taken from the article.
      *
-     * Сначала в переменную article которая отвечает за статью.
-     * Потом идёт проверка нашлась ли статья. Если да,
-     * то со статьи берутся все прилегающие к ней комментарии.
-     *
-     * Если данная статья не найдена, тогда выбрасывается исключение про ненахождение статьи
+     * * If this article is not found, then an exception is thrown about not finding the article
      * */
     @GetMapping(TITLE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') && hasAuthority('ROLE_USER')")
     public List<CommentEntity> getAllCommentsFromStateByTitle(@PathVariable String title) {
         var article = stateService.findStateByTitle(title);
         if(article != null) {
@@ -62,34 +56,31 @@ public class CommentController {
     }
 
     /**
-     * Для функции saveComment()
+     * For the saveComment() function
      *
-     * Данная функция в качестве параметров принимает:
-     * название статьи типа String и комментарий типа CommentEntity.
-     * Название статьи берёт с URL адреса.
+     * This function accepts as parameters:
+     * the title of the article of the String type and a comment of the CommentEntity type.
+     * The title of the article is taken from the URL.
      *
-     * Сначала в переменную article которая отвечает за статью.
-     * Потом идёт проверка нашлась ли статья. Если да:
+     * First, to the variable article, which is responsible for the article.
+     * Then there is a check to see if the article has been found. If yes:
      *
-     * 1. Сначала у комментария устанавливается, что он относится к статье 'article' через данный метод: comment.setState(article);
+     * 1. First, the comment is established that it refers to the article 'article' through this method: comment.setState(article);
      *
-     * 2. После установки отношений у комментария ставится дата,
-     * которая есть в данный момент через метод: comment.setDateOfWriting(LocalDate.now());
+     * 2. After the relationship is established, a date is set for the comment,
+     * the author is in this memory through the method: comment.set the Date of Writing(Local date.now());
      *
-     * 3. После установки даты, комментарий сохраняется в базу данных через данный метод: commentService.saveComment(comment);
+     * 3. After setting the date, the comment is saved to the database using this method: commentService.saveComment(comment);
      *
-     * 4. Если всё успешно - отправляется ResponseEntity.ok и сообщение об успешной операции
+     * 4. If everything is successful, ResponseEntity.ok is sent and a message about the successful operation
      * */
     @PostMapping(WRITE_AND_SAVE_COMMENT)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') && hasAuthority('ROLE_USER')")
     public ResponseEntity<String> saveComment(@PathVariable String title,
                                               @RequestBody CommentEntity comment,
                                               Principal principal) {
         var article = stateService.findStateByTitle(title);
         //System.out.println("State title: " + article);
         if(article != null) {
-            UserDetails currentUser = userDetailService.loadUserByUsername(principal.getName());
-            comment.setUser((UserEntity) currentUser);
             comment.setState(article);
             comment.setDateOfWriting(LocalDate.now());
             commentService.saveComment(comment);
@@ -101,23 +92,22 @@ public class CommentController {
     }
 
     /**
-     * Для функции findCommentByText()
+     * For the find Comment By Text() function
      *
-     * Данная функция в качестве параметров принимает:
-     * 1. Название статьи типа String.
-     * 2. Сам текст который надо заменить типа String.
-     * Название статьи и сам текст берутся из URL адреса.
+     * This function takes as parameters:
+     * 1. The title of the article is of the String type.
+     * 2. The text itself that needs to be replaced with a String type.
+     * The title of the article and the text itself are taken from the URL.
      *
-     * Сначала в переменную article которая отвечает за статью.
-     * Потом идёт проверка нашлась ли статья. Если да:
+     * First, to the variable article, which is responsible for the article.
+     * Then there is a check to see if the article has been found. If yes:
      *
-     * 1. Сначала все комментарии загружаются в переменную 'comments' типа List<CommentEntity>.
-     * 2. После загрузки проводится фильтрация всех комментариев по тексту (полученного с URL адреса)
-     * через метод Stream API .filter().
-     * 3. Все отсортированные комментарии собираются в список через метод: .collect(Collectors.toList()); и выдаются пользователю
+     * 1. First, all comments are loaded into the 'comments' variable of the List<Comment Entity> type.
+     * 2. After uploading, all comments are filtered by the text (received from the URL)
+     * through the Stream API method .filter().
+     * 3. All sorted comments are collected in a list using the method: .collect(Collectors.ToList()); and are given to the user
      * */
     @GetMapping(FIND_COMMENT_BY_TEXT)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') && hasAuthority('ROLE_USER')")
     public List<CommentEntity> findCommentByText(@PathVariable("title") String title, @PathVariable("text") String text) {
         var article = stateService.findStateByTitle(title);
         if (article != null) {
