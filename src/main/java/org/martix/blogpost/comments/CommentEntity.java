@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.martix.blogpost.admin.StateEntity;
-import org.martix.blogpost.users.UserEntity;
 
 import java.time.LocalDate;
 
@@ -32,16 +31,4 @@ public class CommentEntity {
     @ManyToOne
     @JoinColumn(name = "state_id")
     private StateEntity state;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-    @PrePersist
-    @PreUpdate
-    protected void setAuthor() {
-        if(user != null) {
-            this.author = user.getUsername();
-        }
-    }
 }

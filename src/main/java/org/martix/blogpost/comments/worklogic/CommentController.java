@@ -4,12 +4,8 @@ import lombok.AllArgsConstructor;
 import org.martix.blogpost.admin.StateService;
 import org.martix.blogpost.comments.CommentEntity;
 import org.martix.blogpost.comments.CommentService;
-import org.martix.blogpost.users.UserDetailService;
-import org.martix.blogpost.users.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -30,7 +26,6 @@ public class CommentController {
     private static final String TITLE = "/{title}";
     private static final String WRITE_AND_SAVE_COMMENT = "/{title}/write_comment";
     private static final String FIND_COMMENT_BY_TEXT = "/{title}/{text}/find_comment";
-    private final UserDetailService userDetailService;
 
     /**
      * TODO: сделать чтобы в таблице comment_entity показывался заголовок статьи к которой привязан комментарий
@@ -50,7 +45,6 @@ public class CommentController {
      * Если данная статья не найдена, тогда выбрасывается исключение про ненахождение статьи
      * */
     @GetMapping(TITLE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') && hasAuthority('ROLE_USER')")
     public List<CommentEntity> getAllCommentsFromStateByTitle(@PathVariable String title) {
         var article = stateService.findStateByTitle(title);
         if(article != null) {
@@ -81,15 +75,11 @@ public class CommentController {
      * 4. Если всё успешно - отправляется ResponseEntity.ok и сообщение об успешной операции
      * */
     @PostMapping(WRITE_AND_SAVE_COMMENT)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') && hasAuthority('ROLE_USER')")
-    public ResponseEntity<String> saveComment(@PathVariable String title,
+    public ResponseEntity<?> saveComment(@PathVariable String title,
                                               @RequestBody CommentEntity comment,
                                               Principal principal) {
         var article = stateService.findStateByTitle(title);
-        //System.out.println("State title: " + article);
         if(article != null) {
-            UserDetails currentUser = userDetailService.loadUserByUsername(principal.getName());
-            comment.setUser((UserEntity) currentUser);
             comment.setState(article);
             comment.setDateOfWriting(LocalDate.now());
             commentService.saveComment(comment);
@@ -117,7 +107,6 @@ public class CommentController {
      * 3. Все отсортированные комментарии собираются в список через метод: .collect(Collectors.toList()); и выдаются пользователю
      * */
     @GetMapping(FIND_COMMENT_BY_TEXT)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') && hasAuthority('ROLE_USER')")
     public List<CommentEntity> findCommentByText(@PathVariable("title") String title, @PathVariable("text") String text) {
         var article = stateService.findStateByTitle(title);
         if (article != null) {

@@ -5,11 +5,18 @@ spring:
     password: 28859013
     driver-class-name: org.postgresql.Driver
   jpa:
+    #TODO:посмотреть в чём проблема с бд
     hibernate:
       ddl-auto: update
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    #database: postgresql
+    #database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+jwt:
+  secret: vfdes9vfas75sdsdfbge9f9sb7fds9fvs8vfdsbs
+  lifetime : 10m

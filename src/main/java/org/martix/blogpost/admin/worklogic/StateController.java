@@ -27,29 +27,26 @@ public class StateController {
 
     //Сохранение статьи
     @PostMapping(SAVE_STATE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String saveState(@RequestBody StateEntity state) {
         stateService.saveState(state);
         return "Saved";
     }
 
+    //TODO:переделать, чтобы искалась статья не по полному заголовку, а по сходству слов в заголовке
     //Нахождение статьи по заголовку
     @GetMapping(FIND_STATE_BY_TITLE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')&& hasAuthority('ROLE_USER')")
     public StateEntity findStateByTitle(@PathVariable String title) {
         return stateService.findStateByTitle(title);
     }
 
     //Изменение статьи
     @PutMapping(UPDATE_STATE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public StateEntity updateState(@RequestBody StateEntity state) {
         return stateService.updateState(state);
     }
 
     //Удаление статьи
     @DeleteMapping(DELETE_STATE_BY_TITLE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void deleteState(@PathVariable String title) {
         stateService.deleteState(title);
     }

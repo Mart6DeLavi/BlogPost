@@ -1,0 +1,18 @@
+/blogpost - начальная страница, где все статьи и главный в захвате URL
+
+States:
+    /save_state - сохранение статьи - (ROLE_ADMIN)
+    /{title}/find_state - поиск статьи по заголовку - (permitAll)
+    /update_state - обновление статьи - (ROLE_ADMIN)
+    /{title}/delete_state - (ROLE_ADMIN)
+
+Comments:
+    /{title} - получение всех комментариев к статье, то есть просто заходим на статью - (permitAll)
+    /{title}/write_comment - сохранение комментария - (authenticated)
+    /{title}/{text}/find_comment - поиск комментария по тексту - (permitAll)
+
+User:
+    Logging:
+        /auth - аутентификация (permitAll)
+        /registration - регистрация - (permitAll)
+        /info - получения username'а пользователя - (authenticated)
