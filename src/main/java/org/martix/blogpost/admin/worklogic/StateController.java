@@ -6,6 +6,8 @@ import org.martix.blogpost.admin.StateService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,7 +29,10 @@ public class StateController {
 
     //Сохранение статьи
     @PostMapping(SAVE_STATE)
-    public String saveState(@RequestBody StateEntity state) {
+    public String saveState(@RequestBody StateEntity state,
+                            Principal principal) {
+        state.setAuthor(principal.getName());
+        state.setCreatedAt(LocalDate.now());
         stateService.saveState(state);
         return "Saved";
     }
@@ -42,6 +47,7 @@ public class StateController {
     //Изменение статьи
     @PutMapping(UPDATE_STATE)
     public StateEntity updateState(@RequestBody StateEntity state) {
+        state.setUpdatedAt(LocalDate.now());
         return stateService.updateState(state);
     }
 
