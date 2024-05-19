@@ -60,8 +60,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeRequests()
-                    .requestMatchers("/secured").authenticated()
-                    .requestMatchers("/info").authenticated()
+                    .requestMatchers(
+                            "/blogpost/{title}/write_comment",
+                            "/info",
+                            "/secured").authenticated()
                     .requestMatchers("admin").hasRole("ADMIN")
                     .requestMatchers(
                             "/blogpost/save_state",
