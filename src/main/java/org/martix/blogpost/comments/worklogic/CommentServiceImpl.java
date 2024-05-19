@@ -28,4 +28,9 @@ public class CommentServiceImpl implements CommentService {
     public CommentEntity findCommentByText(String text) {
         return commentRepository.findCommentByText(text);
     }
+
+    @Override
+    public void deleteCommentById(Long id) {
+        commentRepository.removeCommentEntityById(id);
+    }
 }

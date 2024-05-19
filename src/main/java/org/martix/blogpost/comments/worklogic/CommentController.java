@@ -126,4 +126,10 @@ public class CommentController {
         }
         return null;
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteComment(@PathVariable Long id) {
+        commentService.deleteCommentById(id);
+        return "Comment was successfully deleted";
+    }
 }
