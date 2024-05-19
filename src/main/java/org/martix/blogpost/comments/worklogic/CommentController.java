@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.martix.blogpost.admin.StateService;
 import org.martix.blogpost.comments.CommentEntity;
 import org.martix.blogpost.comments.CommentService;
+import org.martix.blogpost.messages.EmailSenderService;
+import org.martix.blogpost.user.logging.entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,7 @@ public class CommentController {
     private static final String TITLE = "/{title}";
     private static final String WRITE_AND_SAVE_COMMENT = "/{title}/write_comment";
     private static final String FIND_COMMENT_BY_TEXT = "/{title}/{text}/find_comment";
+    private final EmailSenderService emailSenderService;
 
     /**
      * TODO: сделать чтобы в таблице comment_entity показывался заголовок статьи к которой привязан комментарий
@@ -82,7 +85,13 @@ public class CommentController {
         if(article != null) {
             comment.setState(article);
             comment.setDateOfWriting(LocalDate.now());
+            comment.setAuthor(principal.getName());
             commentService.saveComment(comment);
+
+            emailSenderService.sendEmail("azmater59034@gmail.com",
+                    "New comment from: " + comment.getAuthor(),
+                    "You have a new comment under your article: \n\n" + comment.getText());
+
             return ResponseEntity.ok("Comment saved successfully");
         }
         else {
