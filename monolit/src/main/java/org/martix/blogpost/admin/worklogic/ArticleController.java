@@ -20,7 +20,6 @@ public class ArticleController {
     private static final String UPDATE_STATE = "/update_state";
     private static final String DELETE_STATE_BY_TITLE = "/{title}/delete_state";
 
-    //Получение всех статей
 
     /**
      * Handles GET requests to fetch all articles.
@@ -36,7 +35,6 @@ public class ArticleController {
         return artcileService.findAllStates();
     }
 
-    //Сохранение статьи
 
     /**
      *Handles POST request to save an article.
@@ -60,7 +58,6 @@ public class ArticleController {
     }
 
     //TODO:переделать, чтобы искалась статья не по полному заголовку, а по сходству слов в заголовке
-    //Нахождение статьи по заголовку
 
     /**
      * Handles GET request to find article by text in title. This achieved through {@code @PostMapping} annotation
@@ -82,7 +79,6 @@ public class ArticleController {
         return artcileService.updateState(state);
     }
 
-    //Удаление статьи
     /**
      * @param title take text from user for article name which user want to delete
      * */
