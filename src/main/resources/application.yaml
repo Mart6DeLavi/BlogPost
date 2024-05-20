@@ -4,19 +4,35 @@ spring:
     username: postgres
     password: 28859013
     driver-class-name: org.postgresql.Driver
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: aziteror50957@gmail.com
+    password: rrzgvvsenhhbfjif
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
   jpa:
-    #TODO:посмотреть в чём проблема с бд
     hibernate:
       ddl-auto: update
-    #database: postgresql
-    #database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
+
+
 jwt:
   secret: vfdes9vfas75sdsdfbge9f9sb7fds9fvs8vfdsbs
   lifetime : 10m

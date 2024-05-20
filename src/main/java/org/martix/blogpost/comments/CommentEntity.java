@@ -4,7 +4,7 @@ package org.martix.blogpost.comments;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.martix.blogpost.admin.StateEntity;
+import org.martix.blogpost.admin.ArticleEntity;
 
 import java.time.LocalDate;
 
@@ -30,5 +30,5 @@ public class CommentEntity {
 
     @ManyToOne
     @JoinColumn(name = "state_id")
-    private StateEntity state;
+    private ArticleEntity state;
 }

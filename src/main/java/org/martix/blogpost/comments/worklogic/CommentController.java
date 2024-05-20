@@ -1,11 +1,10 @@
 package org.martix.blogpost.comments.worklogic;
 
 import lombok.AllArgsConstructor;
-import org.martix.blogpost.admin.StateService;
+import org.martix.blogpost.admin.ArticleService;
 import org.martix.blogpost.comments.CommentEntity;
 import org.martix.blogpost.comments.CommentService;
 import org.martix.blogpost.messages.EmailSenderService;
-import org.martix.blogpost.user.logging.entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CommentController {
 
-    private final StateService stateService;
+    private final ArticleService artcileService;
     private final CommentService commentService;
 
 
@@ -36,20 +35,19 @@ public class CommentController {
 
 
     /**
-     * Для функции getAllCommentsFromStateByTitle()
+     * Handles GET requests to fetch all comments from a state by title.
+     * This is achieved through the {@code @GetMapping} annotation which maps HTTP GET requests onto this method.
      *
-     * Данная функция как параметр принимает заголовок статьи
-     * из URL запроса.
+     * @param title The title of the state. This is included in the path variable.
+     * @return List of all comments from the state as {@link CommentEntity} objects. If the state does not exist, an empty list is returned.
      *
-     * Сначала в переменную article которая отвечает за статью.
-     * Потом идёт проверка нашлась ли статья. Если да,
-     * то со статьи берутся все прилегающие к ней комментарии.
-     *
-     * Если данная статья не найдена, тогда выбрасывается исключение про ненахождение статьи
-     * */
+     * @see CommentEntity
+     * @see ArticleService#findStateByTitle(String)
+     * @see CommentService#getAllCommentsByTitle(String)
+     */
     @GetMapping(TITLE)
     public List<CommentEntity> getAllCommentsFromStateByTitle(@PathVariable String title) {
-        var article = stateService.findStateByTitle(title);
+        var article = artcileService.findStateByTitle(title);
         if(article != null) {
             return commentService.getAllCommentsByTitle(title);
         }
@@ -77,11 +75,26 @@ public class CommentController {
      *
      * 4. Если всё успешно - отправляется ResponseEntity.ok и сообщение об успешной операции
      * */
+
+    /**
+     * Handles POST requests to save a comment for a state.
+     * This is achieved through the {@code @PostMapping} annotation which maps HTTP POST requests onto this method.
+     *
+     * @param title The title of the state. This is included in the path variable.
+     * @param comment The comment to be saved as a {@link CommentEntity} object. This is included in the request body.
+     * @param principal The currently authenticated user. This is used to set the author of the comment.
+     * @return A {@link ResponseEntity} indicating the result of the operation. If the state does not exist, a NOT_FOUND status is returned.
+     *
+     * @see CommentEntity
+     * @see ArticleService#findStateByTitle(String)
+     * @see CommentService#saveComment(CommentEntity)
+     * @see EmailSenderService#sendEmail(String, String, String)
+     */
     @PostMapping(WRITE_AND_SAVE_COMMENT)
     public ResponseEntity<?> saveComment(@PathVariable String title,
                                               @RequestBody CommentEntity comment,
                                               Principal principal) {
-        var article = stateService.findStateByTitle(title);
+        var article = artcileService.findStateByTitle(title);
         if(article != null) {
             comment.setState(article);
             comment.setDateOfWriting(LocalDate.now());
@@ -115,9 +128,22 @@ public class CommentController {
      * через метод Stream API .filter().
      * 3. Все отсортированные комментарии собираются в список через метод: .collect(Collectors.toList()); и выдаются пользователю
      * */
+
+    /**
+     * Handles GET requests to find comments by text from a state by title.
+     * This is achieved through the {@code @GetMapping} annotation which maps HTTP GET requests onto this method.
+     *
+     * @param title The title of the state. This is included in the path variable.
+     * @param text The text to search for in the comments. This is included in the path variable.
+     * @return List of comments containing the search text from the state as {@link CommentEntity} objects. If the state does not exist, null is returned.
+     *
+     * @see CommentEntity
+     * @see ArticleService#findStateByTitle(String)
+     * @see CommentService#getAllCommentsByTitle(String)
+     */
     @GetMapping(FIND_COMMENT_BY_TEXT)
     public List<CommentEntity> findCommentByText(@PathVariable("title") String title, @PathVariable("text") String text) {
-        var article = stateService.findStateByTitle(title);
+        var article = artcileService.findStateByTitle(title);
         if (article != null) {
             List<CommentEntity> comments = commentService.getAllCommentsByTitle(title);
             return comments.stream()
@@ -126,6 +152,16 @@ public class CommentController {
         }
         return null;
     }
+
+    /**
+     * Handles DELETE requests to delete a comment by id.
+     * This is achieved through the {@code @DeleteMapping} annotation which maps HTTP DELETE requests onto this method.
+     *
+     * @param id The id of the comment to be deleted. This is included in the path variable.
+     * @return A string indicating the result of the operation.
+     *
+     * @see CommentService#deleteCommentById(Long)
+     */
 
     @DeleteMapping("/{id}")
     public String deleteComment(@PathVariable Long id) {

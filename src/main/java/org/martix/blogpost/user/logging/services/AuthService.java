@@ -17,13 +17,34 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * The AuthService class provides authentication and user registration services.
+ */
+
 @Service
 @AllArgsConstructor
 public class AuthService {
+    /**
+     * A service for user-related operations.
+     */
     private final UserService userService;
+
+    /**
+     * A utility class for JWT token operations.
+     */
     private final JwtTokenUtils jwtTokenUtils;
+
+    /**
+     * A manager for authentication operations.
+     */
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Authenticates a user and creates an authentication token.
+     *
+     * @param authRequest the authentication request containing the username and password
+     * @return a ResponseEntity containing either an AppError or a JwtResponse with the token
+     */
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -36,6 +57,12 @@ public class AuthService {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param registrationUserDto the data transfer object containing the new user's details
+     * @return a ResponseEntity containing either an AppError or a UserDto with the new user's details
+     */
     public ResponseEntity<?> createNewUser(@RequestBody RegistrationUserDto registrationUserDto) {
         if(!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
             return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Пароли не совпадают"), HttpStatus.BAD_REQUEST);
